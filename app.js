@@ -1,5 +1,28 @@
-var http = require('http');
+var express = require('express');
+var app = express();
+app.set('port', process.env.PORT || 3000);
 
-http.createServer( function (req,res){ res.writeHead(200, { 'Content-Type': 'text/plain' }); res.end('Hello world!'); }).listen(3000);
+// 定制 404 页面
+app.use(function(req, res) {
+  res.type('text/plain');
+  res.status(404);
+  res.send('404 - Not Found');
+});
 
-console.log('Server started on localhost:3000; press Ctrl-C to terminate....');
+// 定制 500 页面
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.type('text/plain');
+  res.status(500);
+  res.send('500 - Server Error');
+});
+
+app.listen( app.get('port'),()=>
+  {
+    console.log(
+      'Express started on http://localhost:' +
+      app.get('port') +
+      '; press Ctrl-C to terminate.'
+    );
+  }
+);
